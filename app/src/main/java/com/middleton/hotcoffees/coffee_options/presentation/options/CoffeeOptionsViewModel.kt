@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.usecases.GetCoffeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class CoffeeOptionsViewModel @Inject constructor(
         get() = _state
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getCoffeesUseCase.invoke().onSuccess {
                 _state.value = CoffeeOptionsState(it)
             }.onFailure {

@@ -7,6 +7,7 @@ import com.middleton.hotcoffees.COFFEE_ID_KEY
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.usecases.GetCoffeeByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +26,7 @@ class CoffeeDetailsViewModel @Inject constructor(
         get() = _state
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.value = CoffeeDetailsState.CoffeeDetails(getCoffeeByIdUseCase.invoke(coffeeId))
         }
     }

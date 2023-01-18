@@ -1,31 +1,34 @@
 package com.middleton.hotcoffees.coffee_options.data.repository
 
+import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDao
 import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffee
+import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffeeEntity
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
 import java.io.IOException
 import javax.inject.Inject
 
-class CoffeeRepositoryImpl @Inject constructor(private val api: CoffeeApi): CoffeeRepository {
+class CoffeeRepositoryImpl @Inject constructor(
+    private val api: CoffeeApi,
+    private val dao: CoffeeDao
+) : CoffeeRepository {
     override suspend fun getCoffees(): Result<List<Coffee>> {
         return try {
-            Result.success(api.getCoffees().map { it.toCoffee() })
+            val coffeeDtos = api.getCoffees()
+            dao.insertAll(coffeeDtos.map { it.toCoffeeEntity() })
+            Result.success(coffeeDtos.map { it.toCoffee() })
         } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
+            val coffeeEntities = dao.getAllCoffees()
+            if (coffeeEntities.isEmpty()) {
+                Result.failure(e)
+            } else {
+                Result.success(coffeeEntities.map { it.toCoffee() })
+            }
         }
     }
 
-    override fun getCoffeeById(coffeeId: Int): Coffee {
-        // TODO implement the local db
-        return Coffee(
-            id = 1,
-            title = "Latte",
-            description = "A latte is a coffee-based drink made with espresso and steamed milk",
-            ingredients = listOf("espresso", "steamed milk", "foamed milk"),
-            imageUrl = "https://example.com/latte.jpg",
-            liked = true
-        )
+    override suspend fun getCoffeeById(coffeeId: Int): Coffee {
+        return dao.getCoffeeById(coffeeId).toCoffee()
     }
 }

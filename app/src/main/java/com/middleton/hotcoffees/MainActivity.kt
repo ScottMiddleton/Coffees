@@ -18,6 +18,7 @@ import com.middleton.hotcoffees.coffee_options.presentation.options.CoffeeOption
 import com.middleton.hotcoffees.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
+const val COFFEE_ID_KEY = "COFFEE_ID_KEY"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +48,10 @@ class MainActivity : ComponentActivity() {
                             CoffeeDetailsScreen()
                         }
                     }
-
                 }
             }
         }
     }
 }
 
-const val COFFEE_ID_KEY = "COFFEE_ID_KEY"
 

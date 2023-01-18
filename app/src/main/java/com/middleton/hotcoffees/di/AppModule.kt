@@ -1,5 +1,8 @@
 package com.middleton.hotcoffees.di
 
+import android.app.Application
+import androidx.room.Room
+import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDatabase
 import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.data.repository.CoffeeRepositoryImpl
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
@@ -32,14 +35,22 @@ object AppModule {
             .client(client)
             .build().create()
     }
+    @Provides
+    @Singleton
+    fun provideCoffeeDatabase(app: Application): CoffeeDatabase {
+        return Room.databaseBuilder(app, CoffeeDatabase::class.java, "coffee.db")
+            .build()
+    }
 
     @Provides
     @Singleton
     fun provideCoffeeRepository(
-        api: CoffeeApi
+        api: CoffeeApi,
+        db: CoffeeDatabase
     ): CoffeeRepository {
         return CoffeeRepositoryImpl(
-            api = api
+            api = api,
+            dao = db.coffeeDao()
         )
     }
 }
