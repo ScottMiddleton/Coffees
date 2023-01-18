@@ -1,9 +1,9 @@
-package com.middleton.hotcoffees.presentation
+package com.middleton.hotcoffees.coffee_options.presentation.options
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.middleton.hotcoffees.domain.model.Coffee
-import com.middleton.hotcoffees.domain.usecases.GetCoffeesUseCase
+import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.coffee_options.domain.usecases.GetCoffeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +25,7 @@ class CoffeeOptionsViewModel @Inject constructor(
             getCoffeesUseCase.invoke().onSuccess {
                 _state.value = CoffeeOptionsState(it)
             }.onFailure {
-                // Handle error
+                // TODO Handle error
             }
         }
     }

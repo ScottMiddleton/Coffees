@@ -1,9 +1,8 @@
-package com.middleton.hotcoffees.domain.usecases
+package com.middleton.hotcoffees.coffee_options.domain.usecases
 
-import com.middleton.hotcoffees.domain.model.Coffee
-import com.middleton.hotcoffees.domain.repository.CoffeeRepository
+import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
 import javax.inject.Inject
-import kotlin.Result
 
 
 class GetCoffeesUseCase @Inject constructor(private val repository: CoffeeRepository) {

@@ -1,4 +1,4 @@
-package com.middleton.hotcoffees.data.remote.dto
+package com.middleton.hotcoffees.coffee_options.data.remote.dto
 
 data class CoffeeDto (
     val id: Int,

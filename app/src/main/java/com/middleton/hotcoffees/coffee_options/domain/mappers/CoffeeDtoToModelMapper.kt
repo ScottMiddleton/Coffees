@@ -1,7 +1,7 @@
-package com.middleton.hotcoffees.domain.mappers
+package com.middleton.hotcoffees.coffee_options.domain.mappers
 
-import com.middleton.hotcoffees.data.remote.dto.CoffeeDto
-import com.middleton.hotcoffees.domain.model.Coffee
+import com.middleton.hotcoffees.coffee_options.data.remote.dto.CoffeeDto
+import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 
 fun CoffeeDto.toCoffee() : Coffee {
     return Coffee(

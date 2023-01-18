@@ -1,4 +1,4 @@
-package com.middleton.hotcoffees.domain.model
+package com.middleton.hotcoffees.coffee_options.domain.model
 
 data class Coffee(
     val id: Int,

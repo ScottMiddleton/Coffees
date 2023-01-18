@@ -1,6 +1,6 @@
-package com.middleton.hotcoffees.data.remote
+package com.middleton.hotcoffees.coffee_options.data.remote
 
-import com.middleton.hotcoffees.data.remote.dto.CoffeeDto
+import com.middleton.hotcoffees.coffee_options.data.remote.dto.CoffeeDto
 import retrofit2.http.GET
 
 interface CoffeeApi {

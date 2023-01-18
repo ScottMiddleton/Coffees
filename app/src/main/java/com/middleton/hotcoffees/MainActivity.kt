@@ -1,24 +1,21 @@
 package com.middleton.hotcoffees
 
+import HotCoffeesTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil.annotation.ExperimentalCoilApi
-import com.middleton.hotcoffees.domain.model.Coffee
+import com.middleton.hotcoffees.coffee_options.presentation.detail.CoffeeDetailsScreen
+import com.middleton.hotcoffees.coffee_options.presentation.options.CoffeeOptionsScreen
 import com.middleton.hotcoffees.navigation.Route
-import com.middleton.hotcoffees.presentation.CoffeeOptionsScreen
-import com.middleton.hotcoffees.ui.theme.HotCoffeesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     scaffoldState = scaffoldState
-                ) { offsets ->
+                ) { _ ->
                     NavHost(
                         navController = navController,
                         startDestination = Route.COFFEE_OPTIONS
@@ -46,8 +43,8 @@ class MainActivity : ComponentActivity() {
                         composable(
                             Route.COFFEE_DETAIL + "/{$COFFEE_ID_KEY}",
                             arguments = listOf(navArgument(COFFEE_ID_KEY) { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val bse = backStackEntry.arguments?.getInt(COFFEE_ID_KEY)
+                        ) {
+                            CoffeeDetailsScreen()
                         }
                     }
 
