@@ -14,5 +14,8 @@ interface CoffeeDao {
     suspend fun insertAll(coffees: List<CoffeeEntity>)
 
     @Query("SELECT * FROM coffees WHERE id = :id")
-    fun getCoffeeById(id: Int): CoffeeEntity
+    fun getCoffeeById(id: Int): CoffeeAndUserInteraction
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun updateUserInteraction(interaction: CoffeeUserInteraction)
 }

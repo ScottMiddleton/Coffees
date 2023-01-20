@@ -1,12 +1,12 @@
 package com.middleton.hotcoffees.coffee_options.data.repository
 
 import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDao
+import com.middleton.hotcoffees.coffee_options.data.local.CoffeeUserInteraction
 import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffee
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffeeEntity
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
-import java.io.IOException
 import javax.inject.Inject
 
 class CoffeeRepositoryImpl @Inject constructor(
@@ -30,5 +30,14 @@ class CoffeeRepositoryImpl @Inject constructor(
 
     override suspend fun getCoffeeById(coffeeId: Int): Coffee {
         return dao.getCoffeeById(coffeeId).toCoffee()
+    }
+
+    override suspend fun updateCoffeeLikedStatus(coffeeId: Int, isLiked: Boolean) {
+        val currentUserInteraction = dao.getCoffeeById(coffeeId).userInteraction
+
+        val updatedUserInteraction: CoffeeUserInteraction = currentUserInteraction?.copy(isLiked = isLiked)
+            ?: CoffeeUserInteraction(coffeeId, isLiked)
+
+        dao.updateUserInteraction(updatedUserInteraction)
     }
 }

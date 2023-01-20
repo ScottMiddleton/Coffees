@@ -32,20 +32,20 @@ fun CoffeeOptionsScreen(
 fun CoffeeOptionsContent(modifier: Modifier = Modifier, coffees: List<Coffee>, onCoffeeClick: (Int) -> Unit) {
         LazyColumn(modifier = modifier.fillMaxSize()) {
             items(coffees) { coffee ->
-                CoffeeOption(coffee = coffee, onClick = { onCoffeeClick(coffee.id) })
+                coffee.toCoffeeOption(onClick = { onCoffeeClick(coffee.id) })
             }
         }
 }
 
 @Composable
-fun CoffeeOption(modifier: Modifier = Modifier, coffee: Coffee, onClick: () -> Unit) {
+fun Coffee.toCoffeeOption(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)
         .clickable { onClick() }) {
         Text(
             modifier = Modifier.padding(8.dp),
-            text = coffee.title,
+            text = this.title,
             style = MaterialTheme.typography.h6
         )
     }

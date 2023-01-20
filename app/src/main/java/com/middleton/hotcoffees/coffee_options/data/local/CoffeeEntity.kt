@@ -1,8 +1,7 @@
 package com.middleton.hotcoffees.coffee_options.data.local
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
+import androidx.room.ForeignKey.Companion.NO_ACTION
 
 @Entity(tableName = "coffees")
 @TypeConverters(IngredientsConverter::class)
@@ -11,6 +10,28 @@ data class CoffeeEntity(
     val title: String,
     val description: String,
     val ingredients: List<String>,
-    val imageUrl: String,
-    val liked: Boolean
+    val imageUrl: String
+)
+
+@Entity(
+    foreignKeys = [ForeignKey(
+        entity = CoffeeEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["coffeeId"],
+        onDelete = NO_ACTION
+    )]
+)
+data class CoffeeUserInteraction(
+    @PrimaryKey val coffeeId: Int,
+    val isLiked: Boolean = false,
+    val review: String? = null
+)
+
+data class CoffeeAndUserInteraction(
+    @Embedded val coffee: CoffeeEntity,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "coffeeId"
+    )
+    val userInteraction: CoffeeUserInteraction?
 )
