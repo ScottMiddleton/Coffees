@@ -28,11 +28,11 @@ class CoffeeDetailsViewModel @Inject constructor(
     val state: StateFlow<CoffeeDetailsState>
         get() = _state
 
-    private val viewActions = MutableSharedFlow<CoffeeDetailsAction>()
+    private val uiActions = MutableSharedFlow<CoffeeDetailsAction>()
 
     init {
         viewModelScope.launch {
-            viewActions.collect {
+            uiActions.collect {
                 handleAction(it)
             }
         }
@@ -47,7 +47,7 @@ class CoffeeDetailsViewModel @Inject constructor(
 
     fun emitAction(action: CoffeeDetailsAction) {
         viewModelScope.launch {
-            viewActions.emit(action)
+            uiActions.emit(action)
         }
     }
 

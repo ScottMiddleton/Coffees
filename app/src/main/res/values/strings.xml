@@ -2,4 +2,6 @@
     <string name="app_name">Hot Coffees</string>
     <string name="review">Review</string>
     <string name="ingredients">Ingredients:</string>
+    <string name="generic_error">An error occurred. Please check you internet connection and swipe to refresh.</string>
+    <string name="coffee_options_title">Coffee options</string>
 </resources>

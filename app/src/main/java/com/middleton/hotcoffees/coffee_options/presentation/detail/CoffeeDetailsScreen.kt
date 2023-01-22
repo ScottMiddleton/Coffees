@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +21,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.middleton.hotcoffees.R
+import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
 import com.middleton.hotcoffees.ui.theme.LocalSpacing
 import com.middleton.hotcoffees.ui.theme.MediumGray65
 import com.middleton.hotcoffees.ui.theme.TextWhite
 
 @Composable
-fun CoffeeDetailsScreen(viewModel: CoffeeDetailsViewModel = hiltViewModel()) {
+fun CoffeeDetailsScreen(
+    viewModel: CoffeeDetailsViewModel = hiltViewModel(),
+    onNavigateUp: () -> Unit
+) {
     when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
-        is CoffeeDetailsState.Success -> CoffeeDetailsContent(state) {
-            viewModel.emitAction(
-                CoffeeDetailsAction.OnLikedChanged(it)
-            )
+        is CoffeeDetailsState.Success -> {
+
+            CoffeeDetailsContent(state, onLikeCheckedChange = {
+                viewModel.emitAction(
+                    CoffeeDetailsAction.OnLikedChanged(it)
+                )
+            }, onNavigateUp = onNavigateUp)
         }
         CoffeeDetailsState.Loading -> LoadingScreen()
     }
@@ -40,93 +47,115 @@ fun CoffeeDetailsScreen(viewModel: CoffeeDetailsViewModel = hiltViewModel()) {
 @Composable
 fun CoffeeDetailsContent(
     state: CoffeeDetailsState.Success,
-    onLikeCheckedChange: (Boolean) -> Unit
+    onLikeCheckedChange: (Boolean) -> Unit,
+    onNavigateUp: () -> Unit
 ) {
-    val isLiked = remember { mutableStateOf(state.coffee.liked) }
     val spacing = LocalSpacing.current
     Column {
-        Card(modifier = Modifier.heightIn(max = 400.dp)) {
-            Box(Modifier) {
-                val placeholder = painterResource(R.drawable.placeholder)
-                AsyncImage(
-                    modifier = Modifier.fillMaxWidth(),
-                    model = state.coffee.imageUrl,
-                    contentDescription = null,
-                    error = placeholder,
-                    contentScale = Crop
-                )
+        Box(modifier = Modifier.heightIn(max = 400.dp)) {
+            val placeholder = painterResource(R.drawable.placeholder)
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = state.coffee.imageUrl,
+                contentDescription = null,
+                placeholder = placeholder,
+                error = placeholder,
+                contentScale = Crop
+            )
 
-                Row(
-                    modifier = Modifier
-                        .background(MediumGray65)
-                        .align(Alignment.TopCenter),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = state.coffee.title,
-                        style = MaterialTheme.typography.h2,
-                        color = TextWhite,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f).padding(start = spacing.spaceSmall)
-                    )
-                    IconToggleButton(
-                        onCheckedChange = {
-                            isLiked.value = it
-                            onLikeCheckedChange(it)
-                        },
-                        checked = isLiked.value
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = null,
-                            tint = if (isLiked.value) Color.Red else Color.White
-                        )
-                    }
-                }
-            }
+            CoffeeTopAppBar(
+                title = state.coffee.title,
+                liked = state.coffee.liked,
+                onNavigateUp = { onNavigateUp() },
+                onLikeCheckedChange = { liked -> onLikeCheckedChange(liked) })
         }
 
-        Spacer(modifier = Modifier.height(spacing.spaceMedium))
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
 
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(spacing.spaceMedium)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(spacing.spaceMedium)
+        ) {
             Text(text = state.coffee.description, style = MaterialTheme.typography.body1)
 
-            Spacer(modifier = Modifier.height(spacing.spaceSmall))
-
-            Text(
-                text = stringResource(R.string.ingredients) + state.coffee.ingredients.joinToString(),
-                style = MaterialTheme.typography.body1
-            )
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
 
-            TextButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { /* handle review */ }) {
-                Icon(
-                    Icons.Filled.Create,
-                    modifier = Modifier.padding(end = spacing.spaceSmall),
-                    contentDescription = null
+            Row {
+                Text(
+                    modifier = Modifier.padding(end = spacing.spaceExtraSmall),
+                    text = stringResource(R.string.ingredients),
+                    style = MaterialTheme.typography.body1
                 )
-                Text(text = stringResource(R.string.review), style = MaterialTheme.typography.h6)
+
+                Text(
+                    text = state.coffee.ingredients.joinToString(),
+                    style = MaterialTheme.typography.body2
+                )
+            }
+
+
+            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+
+            WriteReviewButton(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+
             }
         }
     }
 }
 
 @Composable
-fun LoadingScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+private fun CoffeeTopAppBar(
+    title: String,
+    onNavigateUp: () -> Unit,
+    onLikeCheckedChange: (Boolean) -> Unit,
+    liked: Boolean
+) {
+    val isLiked = remember { mutableStateOf(liked) }
+
+    Row(
+        modifier = Modifier.background(MediumGray65).height(56.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        CircularProgressIndicator(
-            Modifier.size(48.dp),
-            color = Color.Black
+        IconButton(modifier = Modifier.padding(end = 8.dp), onClick = { onNavigateUp() }) {
+            Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
+        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.h2,
+            color = TextWhite,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp)
         )
+        IconToggleButton(
+            onCheckedChange = { checked ->
+                isLiked.value = checked
+                onLikeCheckedChange(checked)
+            },
+            checked = isLiked.value
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = null,
+                tint = if (isLiked.value) Color.Red else Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun WriteReviewButton(modifier: Modifier, onClick: () -> Unit) {
+    val textStyle = MaterialTheme.typography.button
+    val textColor = MaterialTheme.colors.onSecondary
+
+    Button(
+        onClick = onClick,
+        modifier = modifier.padding(16.dp)
+    ) {
+        Text("Write Review", style = textStyle, color = textColor)
     }
 }

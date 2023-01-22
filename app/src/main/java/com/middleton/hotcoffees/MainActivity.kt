@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import com.middleton.hotcoffees.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
 const val COFFEE_ID_KEY = "COFFEE_ID_KEY"
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,22 +32,27 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     scaffoldState = scaffoldState
-                ) { _ ->
+                ) { padding ->
                     NavHost(
+                        modifier = Modifier.padding(padding),
                         navController = navController,
                         startDestination = Route.COFFEE_OPTIONS
                     ) {
                         composable(Route.COFFEE_OPTIONS) {
                             CoffeeOptionsScreen(navigateToDetail = { coffeeId ->
                                 navController.navigate(Route.COFFEE_DETAIL + "/$coffeeId")
-                            })
+                            }, scaffoldState = scaffoldState)
                         }
 
                         composable(
                             Route.COFFEE_DETAIL + "/{$COFFEE_ID_KEY}",
-                            arguments = listOf(navArgument(COFFEE_ID_KEY) { type = NavType.IntType })
+                            arguments = listOf(navArgument(COFFEE_ID_KEY) {
+                                type = NavType.IntType
+                            })
                         ) {
-                            CoffeeDetailsScreen()
+                            CoffeeDetailsScreen(onNavigateUp = {
+                                navController.navigateUp()
+                            })
                         }
                     }
                 }
@@ -53,5 +60,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 

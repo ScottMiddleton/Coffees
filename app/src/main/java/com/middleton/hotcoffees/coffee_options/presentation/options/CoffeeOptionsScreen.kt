@@ -1,44 +1,111 @@
 package com.middleton.hotcoffees.coffee_options.presentation.options
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.middleton.hotcoffees.R
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun CoffeeOptionsScreen(
     viewModel: CoffeeOptionsViewModel = hiltViewModel(),
-    navigateToDetail: (Int) -> Unit
+    navigateToDetail: (Int) -> Unit,
+    scaffoldState: ScaffoldState,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
-    CoffeeOptionsContent(coffees = state.coffees) { coffeeId ->
-        navigateToDetail(coffeeId)
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = event.message.asString(context)
+            )
+        }
+    }
+
+    Box {
+        TopAppBar(
+            title = {
+                Text(
+                    stringResource(R.string.coffee_options_title),
+                    style = MaterialTheme.typography.h3
+                )
+            }
+        )
+
+        if (state.isLoading) {
+            LoadingScreen()
+        } else {
+            CoffeeOptionsList(
+                modifier = Modifier.padding(top = 32.dp),
+                coffees = state.coffees,
+                onCoffeeClick = { coffeeId ->
+                    navigateToDetail(coffeeId)
+                },
+                onSwipeToRefresh = {
+                    viewModel.emitAction(RefreshCoffeesAction)
+                },
+                state = state
+            )
+        }
+
+        TopAppBar(
+            title = {
+                Text(
+                    stringResource(R.string.coffee_options_title),
+                    style = MaterialTheme.typography.h3
+                )
+            }
+        )
+    }
+
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CoffeeOptionsList(
+    modifier: Modifier = Modifier,
+    coffees: List<Coffee>,
+    onCoffeeClick: (Int) -> Unit,
+    onSwipeToRefresh: () -> Unit,
+    state: CoffeeOptionsState
+) {
+    val refreshScope = rememberCoroutineScope()
+    val refreshing = state.isLoading
+
+    fun refresh() = refreshScope.launch {
+        onSwipeToRefresh()
+    }
+
+    val prState = rememberPullRefreshState(refreshing, ::refresh)
+
+    Box(modifier.pullRefresh(prState)) {
+        LazyColumn(modifier = modifier.fillMaxSize()) {
+            items(coffees) { coffee ->
+                coffee.ToCoffeeOption(onClick = { onCoffeeClick(coffee.id) })
+            }
+        }
+        PullRefreshIndicator(refreshing, prState, Modifier.align(Alignment.TopCenter))
     }
 }
 
 @Composable
-fun CoffeeOptionsContent(modifier: Modifier = Modifier, coffees: List<Coffee>, onCoffeeClick: (Int) -> Unit) {
-        LazyColumn(modifier = modifier.fillMaxSize()) {
-            items(coffees) { coffee ->
-                coffee.toCoffeeOption(onClick = { onCoffeeClick(coffee.id) })
-            }
-        }
-}
-
-@Composable
-fun Coffee.toCoffeeOption(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun Coffee.ToCoffeeOption(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)

@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoffeeDao {
     @Query("SELECT * FROM coffees")
-    suspend fun getAllCoffees(): List<CoffeeEntity>
+    fun getAllCoffees(): Flow<List<CoffeeAndUserInteraction>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(coffees: List<CoffeeEntity>)

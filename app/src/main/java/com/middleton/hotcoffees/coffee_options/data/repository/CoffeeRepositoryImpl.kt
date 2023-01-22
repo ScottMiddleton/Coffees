@@ -7,24 +7,24 @@ import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffee
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffeeEntity
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CoffeeRepositoryImpl @Inject constructor(
     private val api: CoffeeApi,
     private val dao: CoffeeDao
 ) : CoffeeRepository {
-    override suspend fun getCoffees(): Result<List<Coffee>> {
+    override suspend fun getCoffees(): Flow<List<Coffee>> {
+        return dao.getAllCoffees().map { entityList -> entityList.map { it.toCoffee() } }
+    }
+
+    override suspend fun updateCoffees(): Result<Unit> {
         return try {
-            val coffeeDtos = api.getCoffees()
-            dao.insertAll(coffeeDtos.map { it.toCoffeeEntity() })
-            Result.success(coffeeDtos.map { it.toCoffee() })
+            dao.insertAll(api.getCoffees().map { it.toCoffeeEntity() })
+            Result.success(Unit)
         } catch (e: Exception) {
-            val coffeeEntities = dao.getAllCoffees()
-            if (coffeeEntities.isEmpty()) {
-                Result.failure(e)
-            } else {
-                Result.success(coffeeEntities.map { it.toCoffee() })
-            }
+            Result.failure(e)
         }
     }
 
@@ -35,8 +35,9 @@ class CoffeeRepositoryImpl @Inject constructor(
     override suspend fun updateCoffeeLikedStatus(coffeeId: Int, isLiked: Boolean) {
         val currentUserInteraction = dao.getCoffeeById(coffeeId).userInteraction
 
-        val updatedUserInteraction: CoffeeUserInteraction = currentUserInteraction?.copy(isLiked = isLiked)
-            ?: CoffeeUserInteraction(coffeeId, isLiked)
+        val updatedUserInteraction: CoffeeUserInteraction =
+            currentUserInteraction?.copy(isLiked = isLiked)
+                ?: CoffeeUserInteraction(coffeeId, isLiked)
 
         dao.updateUserInteraction(updatedUserInteraction)
     }
