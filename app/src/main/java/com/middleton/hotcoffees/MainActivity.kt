@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.middleton.hotcoffees.coffee_options.presentation.detail.CoffeeDetailsScreen
 import com.middleton.hotcoffees.coffee_options.presentation.options.CoffeeOptionsScreen
+import com.middleton.hotcoffees.coffee_review.presentation.ReviewScreen
 import com.middleton.hotcoffees.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,7 +53,18 @@ class MainActivity : ComponentActivity() {
                         ) {
                             CoffeeDetailsScreen(onNavigateUp = {
                                 navController.navigateUp()
+                            }, onReviewClicked = { coffeeId ->
+                                navController.navigate(Route.COFFEE_REVIEW + "/$coffeeId")
                             })
+                        }
+
+                        composable(
+                            Route.COFFEE_REVIEW + "/{$COFFEE_ID_KEY}",
+                            arguments = listOf(navArgument(COFFEE_ID_KEY) {
+                                type = NavType.IntType
+                            })
+                        ) {
+                            ReviewScreen()
                         }
                     }
                 }

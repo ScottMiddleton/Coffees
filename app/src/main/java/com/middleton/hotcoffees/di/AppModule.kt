@@ -6,6 +6,9 @@ import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDatabase
 import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.data.repository.CoffeeRepositoryImpl
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
+import com.middleton.hotcoffees.coffee_review.data.remote.ReviewApi
+import com.middleton.hotcoffees.coffee_review.data.repository.CoffeeReviewRepositoryImpl
+import com.middleton.hotcoffees.coffee_review.domain.repository.CoffeeReviewRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +31,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApi(client: OkHttpClient): CoffeeApi {
+    fun provideCoffeeApi(client: OkHttpClient): CoffeeApi {
         return Retrofit.Builder()
             .baseUrl(CoffeeApi.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
@@ -51,6 +54,26 @@ object AppModule {
         return CoffeeRepositoryImpl(
             api = api,
             dao = db.coffeeDao()
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewApi(client: OkHttpClient): ReviewApi {
+        return Retrofit.Builder()
+            .baseUrl(ReviewApi.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(client)
+            .build().create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoffeeReviewRepository(
+        api: ReviewApi
+    ): CoffeeReviewRepository {
+        return CoffeeReviewRepositoryImpl(
+            api = api
         )
     }
 }

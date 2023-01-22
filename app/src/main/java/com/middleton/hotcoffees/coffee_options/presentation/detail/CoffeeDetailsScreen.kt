@@ -28,7 +28,8 @@ import com.middleton.hotcoffees.ui.theme.TextWhite
 @Composable
 fun CoffeeDetailsScreen(
     viewModel: CoffeeDetailsViewModel = hiltViewModel(),
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    onReviewClicked: (Int) -> Unit
 ) {
     when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
         is CoffeeDetailsState.Success -> {
@@ -37,7 +38,7 @@ fun CoffeeDetailsScreen(
                 viewModel.emitAction(
                     CoffeeDetailsAction.OnLikedChanged(it)
                 )
-            }, onNavigateUp = onNavigateUp)
+            }, onNavigateUp = onNavigateUp, onReviewClicked = { onReviewClicked(state.coffee.id) })
         }
         CoffeeDetailsState.Loading -> LoadingScreen()
     }
@@ -47,7 +48,8 @@ fun CoffeeDetailsScreen(
 fun CoffeeDetailsContent(
     state: CoffeeDetailsState.Success,
     onLikeCheckedChange: (Boolean) -> Unit,
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    onReviewClicked: () -> Unit
 ) {
     val spacing = LocalSpacing.current
 
@@ -100,9 +102,10 @@ fun CoffeeDetailsContent(
 
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
 
-            WriteReviewButton(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-
-            }
+            WriteReviewButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = onReviewClicked
+            )
         }
     }
 }

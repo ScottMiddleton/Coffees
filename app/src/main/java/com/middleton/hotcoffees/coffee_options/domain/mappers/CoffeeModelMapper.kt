@@ -5,18 +5,6 @@ import com.middleton.hotcoffees.coffee_options.data.local.CoffeeEntity
 import com.middleton.hotcoffees.coffee_options.data.remote.dto.CoffeeDto
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 
-fun CoffeeDto.toCoffee() : Coffee {
-    return Coffee(
-        id = this.id,
-        title = this.title,
-        description = this.description,
-        ingredients = this.ingredients,
-        imageUrl = this.image,
-        liked = false,
-        review = null
-    )
-}
-
 fun CoffeeDto.toCoffeeEntity() : CoffeeEntity {
     return CoffeeEntity(
         id = this.id,
@@ -24,18 +12,6 @@ fun CoffeeDto.toCoffeeEntity() : CoffeeEntity {
         description = this.description,
         ingredients = this.ingredients,
         imageUrl = this.image
-    )
-}
-
-fun CoffeeEntity.toCoffee() : Coffee {
-    return Coffee(
-        id = this.id,
-        title = this.title,
-        description = this.description,
-        ingredients = this.ingredients,
-        imageUrl = this.imageUrl,
-        liked = false,
-        review = null
     )
 }
 

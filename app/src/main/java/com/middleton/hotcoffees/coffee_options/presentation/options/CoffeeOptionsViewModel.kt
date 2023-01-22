@@ -71,6 +71,5 @@ class CoffeeOptionsViewModel @Inject constructor(
 data class CoffeeOptionsState(
     val coffees: List<Coffee> = emptyList(), val isLoading: Boolean = true
 )
-
 object RefreshCoffeesAction
 data class CoffeeOptionsSnackBarEvent(val message: UiText)
