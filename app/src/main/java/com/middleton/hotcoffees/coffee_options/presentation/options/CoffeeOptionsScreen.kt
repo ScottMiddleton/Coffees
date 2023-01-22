@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -52,7 +55,7 @@ fun CoffeeOptionsScreen(
             LoadingScreen()
         } else {
             CoffeeOptionsList(
-                modifier = Modifier.padding(top = 32.dp),
+                modifier = Modifier.padding(top = 28.dp),
                 coffees = state.coffees,
                 onCoffeeClick = { coffeeId ->
                     navigateToDetail(coffeeId)
@@ -97,7 +100,7 @@ fun CoffeeOptionsList(
     Box(modifier.pullRefresh(prState)) {
         LazyColumn(modifier = modifier.fillMaxSize()) {
             items(coffees) { coffee ->
-                coffee.ToCoffeeOption(onClick = { onCoffeeClick(coffee.id) })
+                CoffeeListItem(onClick = { onCoffeeClick(coffee.id) }, coffee = coffee)
             }
         }
         PullRefreshIndicator(refreshing, prState, Modifier.align(Alignment.TopCenter))
@@ -105,16 +108,27 @@ fun CoffeeOptionsList(
 }
 
 @Composable
-fun Coffee.ToCoffeeOption(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun CoffeeListItem(modifier: Modifier = Modifier, coffee: Coffee, onClick: () -> Unit) {
     Card(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)
         .clickable { onClick() }) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = this.title,
-            style = MaterialTheme.typography.h6
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(1f),
+                text = coffee.title,
+                style = MaterialTheme.typography.h6
+            )
+            if (coffee.liked) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            }
+        }
     }
 }
 

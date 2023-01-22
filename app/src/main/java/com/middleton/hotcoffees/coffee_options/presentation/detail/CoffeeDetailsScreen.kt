@@ -5,22 +5,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.middleton.hotcoffees.R
+import com.middleton.hotcoffees.coffee_options.presentation.shared.LikeToggleButton
 import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
 import com.middleton.hotcoffees.ui.theme.LocalSpacing
 import com.middleton.hotcoffees.ui.theme.MediumGray65
@@ -51,6 +50,7 @@ fun CoffeeDetailsContent(
     onNavigateUp: () -> Unit
 ) {
     val spacing = LocalSpacing.current
+
     Column {
         Box(modifier = Modifier.heightIn(max = 400.dp)) {
             val placeholder = painterResource(R.drawable.placeholder)
@@ -66,8 +66,9 @@ fun CoffeeDetailsContent(
             CoffeeTopAppBar(
                 title = state.coffee.title,
                 liked = state.coffee.liked,
-                onNavigateUp = { onNavigateUp() },
-                onLikeCheckedChange = { liked -> onLikeCheckedChange(liked) })
+                onNavigateUp = onNavigateUp,
+                onLikeCheckedChange = onLikeCheckedChange
+            )
         }
 
         Spacer(modifier = Modifier.height(spacing.spaceSmall))
@@ -81,16 +82,18 @@ fun CoffeeDetailsContent(
 
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
 
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.padding(end = spacing.spaceExtraSmall),
                     text = stringResource(R.string.ingredients),
-                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold
+
                 )
 
                 Text(
                     text = state.coffee.ingredients.joinToString(),
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body1
                 )
             }
 
@@ -111,14 +114,14 @@ private fun CoffeeTopAppBar(
     onLikeCheckedChange: (Boolean) -> Unit,
     liked: Boolean
 ) {
-    val isLiked = remember { mutableStateOf(liked) }
-
     Row(
-        modifier = Modifier.background(MediumGray65).height(56.dp),
+        modifier = Modifier
+            .background(MediumGray65)
+            .height(56.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(modifier = Modifier.padding(end = 8.dp), onClick = { onNavigateUp() }) {
+        IconButton(modifier = Modifier.padding(end = 8.dp), onClick = onNavigateUp) {
             Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
         }
         Text(
@@ -131,19 +134,7 @@ private fun CoffeeTopAppBar(
                 .weight(1f)
                 .padding(start = 8.dp)
         )
-        IconToggleButton(
-            onCheckedChange = { checked ->
-                isLiked.value = checked
-                onLikeCheckedChange(checked)
-            },
-            checked = isLiked.value
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = null,
-                tint = if (isLiked.value) Color.Red else Color.White
-            )
-        }
+        LikeToggleButton(liked = liked, onLikeCheckedChange = onLikeCheckedChange)
     }
 }
 
