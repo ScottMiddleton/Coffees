@@ -16,10 +16,10 @@ class CoffeeReviewRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 Result.success(Unit)
             } else {
-                Result.failure(Error(response.errorBody()?.string() ?: "Unknown error"))
+                Result.failure(Error())
             }
         } catch (e: Exception) {
-            Result.failure(Error(e.message ?: "Unknown error"))
+            Result.failure(Error())
         }
     }
 }

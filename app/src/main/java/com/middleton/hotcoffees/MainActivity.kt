@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.middleton.hotcoffees.coffee_options.presentation.detail.CoffeeDetailsScreen
 import com.middleton.hotcoffees.coffee_options.presentation.options.CoffeeOptionsScreen
-import com.middleton.hotcoffees.coffee_review.presentation.ReviewScreen
+import com.middleton.hotcoffees.coffee_review.presentation.CoffeeReviewScreen
 import com.middleton.hotcoffees.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,7 +64,9 @@ class MainActivity : ComponentActivity() {
                                 type = NavType.IntType
                             })
                         ) {
-                            ReviewScreen()
+                            CoffeeReviewScreen(scaffoldState = scaffoldState, onNavigateUp = {
+                                navController.navigateUp()
+                            })
                         }
                     }
                 }

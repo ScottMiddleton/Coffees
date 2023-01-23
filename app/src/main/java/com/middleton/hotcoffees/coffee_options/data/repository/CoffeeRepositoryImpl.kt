@@ -24,7 +24,7 @@ class CoffeeRepositoryImpl @Inject constructor(
             dao.insertAll(api.getCoffees().map { it.toCoffeeEntity() })
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Error())
         }
     }
 

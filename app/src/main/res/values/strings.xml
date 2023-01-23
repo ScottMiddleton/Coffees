@@ -2,6 +2,10 @@
     <string name="app_name">Hot Coffees</string>
     <string name="review">Review</string>
     <string name="ingredients">Ingredients:</string>
-    <string name="generic_error">An error occurred. Please check you internet connection and swipe to refresh.</string>
+    <string name="generic_error_loading">An error occurred. Please check you internet connection and swipe to refresh.</string>
+    <string name="generic_error_review">An error occurred. Please check you internet connection and resubmit.</string>
     <string name="coffee_options_title">Coffee options</string>
+    <string name="write_review">Write Review</string>
+    <string name="submit_reveiw">Submit Review</string>
+    <string name="rating">Rating</string>
 </resources>

@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class ValidateReviewUseCase @Inject constructor() {
     fun isValid(review: Review): Boolean {
-        return !(review.body.isNullOrEmpty() || review.date.isNullOrEmpty() || review.name.isNullOrEmpty() || review.rating == null)
+        return !(review.body.isNullOrEmpty() || review.name.isNullOrEmpty() || review.rating == null)
     }
 }

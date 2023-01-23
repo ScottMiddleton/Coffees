@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 fun CoffeeOptionsScreen(
     viewModel: CoffeeOptionsViewModel = hiltViewModel(),
     navigateToDetail: (Int) -> Unit,
-    scaffoldState: ScaffoldState,
+    scaffoldState: ScaffoldState
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
     val context = LocalContext.current

@@ -150,6 +150,6 @@ fun WriteReviewButton(modifier: Modifier, onClick: () -> Unit) {
         onClick = onClick,
         modifier = modifier.padding(16.dp)
     ) {
-        Text("Write Review", style = textStyle, color = textColor)
+        Text(stringResource(R.string.write_review), style = textStyle, color = textColor)
     }
 }

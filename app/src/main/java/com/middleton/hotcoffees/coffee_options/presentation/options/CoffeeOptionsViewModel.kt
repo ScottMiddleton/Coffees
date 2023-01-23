@@ -51,7 +51,7 @@ class CoffeeOptionsViewModel @Inject constructor(
         viewModelScope.launch {
             updateCoffeesUseCase.invoke().onFailure {
                 if (state.value.coffees.isEmpty()) {
-                    _uiEvent.send(CoffeeOptionsSnackBarEvent(UiText.StringResource(R.string.generic_error)))
+                    _uiEvent.send(CoffeeOptionsSnackBarEvent(UiText.StringResource(R.string.generic_error_loading)))
                     _state.value = _state.value.copy(isLoading = false)
                 }
             }.onSuccess {
