@@ -21,7 +21,6 @@ import com.middleton.hotcoffees.navigation.Route
 import dagger.hilt.android.AndroidEntryPoint
 
 const val COFFEE_ID_KEY = "COFFEE_ID_KEY"
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

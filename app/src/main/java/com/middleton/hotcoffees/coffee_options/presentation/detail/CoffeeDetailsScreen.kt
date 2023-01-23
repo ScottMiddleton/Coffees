@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,8 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.middleton.hotcoffees.R
-import com.middleton.hotcoffees.coffee_options.presentation.shared.LikeToggleButton
-import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
+import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.ui.theme.LocalSpacing
 import com.middleton.hotcoffees.ui.theme.MediumGray65
 import com.middleton.hotcoffees.ui.theme.TextWhite
@@ -31,22 +33,29 @@ fun CoffeeDetailsScreen(
     onNavigateUp: () -> Unit,
     onReviewClicked: (Int) -> Unit
 ) {
-    when (val state = viewModel.state.collectAsStateWithLifecycle().value) {
-        is CoffeeDetailsState.Success -> {
+    val state = viewModel.state.collectAsStateWithLifecycle().value
 
-            CoffeeDetailsContent(state, onLikeCheckedChange = {
+    Box {
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                Modifier.size(48.dp).align(Alignment.Center),
+                color = Color.Black
+            )
+        }
+
+        state.coffee?.let { coffee ->
+            CoffeeDetailsContent(coffee, onLikeCheckedChange = {
                 viewModel.emitAction(
                     CoffeeDetailsAction.OnLikedChanged(it)
                 )
-            }, onNavigateUp = onNavigateUp, onReviewClicked = { onReviewClicked(state.coffee.id) })
+            }, onNavigateUp = onNavigateUp, onReviewClicked = { onReviewClicked(coffee.id) })
         }
-        CoffeeDetailsState.Loading -> LoadingScreen()
     }
 }
 
 @Composable
 fun CoffeeDetailsContent(
-    state: CoffeeDetailsState.Success,
+    coffee: Coffee,
     onLikeCheckedChange: (Boolean) -> Unit,
     onNavigateUp: () -> Unit,
     onReviewClicked: () -> Unit
@@ -58,7 +67,7 @@ fun CoffeeDetailsContent(
             val placeholder = painterResource(R.drawable.placeholder)
             AsyncImage(
                 modifier = Modifier.fillMaxWidth(),
-                model = state.coffee.imageUrl,
+                model = coffee.imageUrl,
                 contentDescription = null,
                 placeholder = placeholder,
                 error = placeholder,
@@ -66,8 +75,8 @@ fun CoffeeDetailsContent(
             )
 
             CoffeeTopAppBar(
-                title = state.coffee.title,
-                liked = state.coffee.liked,
+                title = coffee.title,
+                liked = coffee.liked,
                 onNavigateUp = onNavigateUp,
                 onLikeCheckedChange = onLikeCheckedChange
             )
@@ -80,7 +89,7 @@ fun CoffeeDetailsContent(
                 .fillMaxWidth()
                 .padding(spacing.spaceMedium)
         ) {
-            Text(text = state.coffee.description, style = MaterialTheme.typography.body1)
+            Text(text = coffee.description, style = MaterialTheme.typography.body1)
 
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
 
@@ -94,7 +103,7 @@ fun CoffeeDetailsContent(
                 )
 
                 Text(
-                    text = state.coffee.ingredients.joinToString(),
+                    text = coffee.ingredients.joinToString(),
                     style = MaterialTheme.typography.body1
                 )
             }
@@ -124,12 +133,12 @@ private fun CoffeeTopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(modifier = Modifier.padding(end = 8.dp), onClick = onNavigateUp) {
+        IconButton(modifier = Modifier.padding(end = 10.dp, start = 5.dp), onClick = onNavigateUp) {
             Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
         }
         Text(
             text = title,
-            style = MaterialTheme.typography.h2,
+            style = MaterialTheme.typography.h3,
             color = TextWhite,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -138,6 +147,29 @@ private fun CoffeeTopAppBar(
                 .padding(start = 8.dp)
         )
         LikeToggleButton(liked = liked, onLikeCheckedChange = onLikeCheckedChange)
+    }
+}
+
+@Composable
+fun LikeToggleButton(
+    modifier: Modifier = Modifier,
+    liked: Boolean,
+    onLikeCheckedChange: (Boolean) -> Unit
+) {
+    val isLiked = remember { mutableStateOf(liked) }
+    IconToggleButton(
+        modifier = modifier,
+        onCheckedChange = { checked ->
+            isLiked.value = checked
+            onLikeCheckedChange(checked)
+        },
+        checked = isLiked.value
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Favorite,
+            contentDescription = null,
+            tint = if (isLiked.value) Color.Red else Color.White
+        )
     }
 }
 

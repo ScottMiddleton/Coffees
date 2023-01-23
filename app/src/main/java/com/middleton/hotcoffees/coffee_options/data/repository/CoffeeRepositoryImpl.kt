@@ -8,6 +8,7 @@ import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffeeEntity
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -19,12 +20,12 @@ class CoffeeRepositoryImpl @Inject constructor(
         return dao.getAllCoffees().map { entityList -> entityList.map { it.toCoffee() } }
     }
 
-    override suspend fun updateCoffees(): Result<Unit> {
-        return try {
+    override suspend fun updateCoffees(): Flow<Result<Unit>> = flow {
+        try {
             dao.insertAll(api.getCoffees().map { it.toCoffeeEntity() })
-            Result.success(Unit)
+            emit(Result.success(Unit))
         } catch (e: Exception) {
-            Result.failure(Error())
+            emit(Result.failure(Error()))
         }
     }
 

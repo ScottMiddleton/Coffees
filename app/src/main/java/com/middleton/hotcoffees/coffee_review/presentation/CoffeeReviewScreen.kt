@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.middleton.hotcoffees.R
-import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
 import com.middleton.hotcoffees.ui.theme.LocalSpacing
 
 @Composable
@@ -49,14 +48,29 @@ fun CoffeeReviewScreen(
         }
     }
 
-    if (state.isLoading) {
-        LoadingScreen()
-    } else {
+    Box {
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                Modifier
+                    .size(48.dp)
+                    .align(Alignment.Center),
+                color = Color.Black
+            )
+        }
+
         Column {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.review)) },
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.review),
+                        style = MaterialTheme.typography.h3
+                    )
+                },
                 navigationIcon = {
-                    IconButton(modifier = Modifier.padding(end = 8.dp), onClick = onNavigateUp) {
+                    IconButton(
+                        modifier = Modifier.padding(end = 8.dp),
+                        onClick = onNavigateUp
+                    ) {
                         Icon(Icons.Filled.ArrowBack, null, tint = Color.White)
                     }
                 })
@@ -100,7 +114,9 @@ fun CoffeeReviewScreen(
 
                 Button(
                     onClick = {
-                        viewModel.emitAction(CoffeeReviewAction.OnReviewSubmitted)
+                        if (!state.isLoading) {
+                            viewModel.emitAction(CoffeeReviewAction.OnReviewSubmitted)
+                        }
                     },
                     modifier = Modifier
                         .padding(8.dp)

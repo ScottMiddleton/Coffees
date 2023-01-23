@@ -23,8 +23,7 @@ class CoffeeDetailsViewModel @Inject constructor(
 
     private val coffeeId: Int = checkNotNull(savedStateHandle[COFFEE_ID_KEY])
 
-    private val _state: MutableStateFlow<CoffeeDetailsState> =
-        MutableStateFlow(CoffeeDetailsState.Loading)
+    private val _state: MutableStateFlow<CoffeeDetailsState> = MutableStateFlow(CoffeeDetailsState())
     val state: StateFlow<CoffeeDetailsState>
         get() = _state
 
@@ -39,8 +38,9 @@ class CoffeeDetailsViewModel @Inject constructor(
 
 
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = CoffeeDetailsState.Success(
-                coffee = getCoffeeByIdUseCase.invoke(coffeeId)
+            _state.value = state.value.copy(
+                coffee = getCoffeeByIdUseCase.invoke(coffeeId),
+                isLoading = false
             )
         }
     }
@@ -65,11 +65,8 @@ class CoffeeDetailsViewModel @Inject constructor(
     }
 }
 
-sealed class CoffeeDetailsState {
-    data class Success(val coffee: Coffee) : CoffeeDetailsState()
-    object Loading : CoffeeDetailsState()
-}
 
+data class CoffeeDetailsState(val coffee: Coffee? = null, val isLoading: Boolean = true)
 sealed class CoffeeDetailsAction {
     data class OnLikedChanged(val isLiked: Boolean) : CoffeeDetailsAction()
     data class OnReviewClicked(val isLiked: Boolean) : CoffeeDetailsAction()

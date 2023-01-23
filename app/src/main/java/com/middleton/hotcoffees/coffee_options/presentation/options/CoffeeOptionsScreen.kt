@@ -21,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.middleton.hotcoffees.R
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
-import com.middleton.hotcoffees.coffee_options.presentation.shared.LoadingScreen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,6 +42,18 @@ fun CoffeeOptionsScreen(
     }
 
     Box {
+        CoffeeOptionsList(
+            modifier = Modifier.padding(top = 28.dp),
+            coffees = state.coffees,
+            onCoffeeClick = { coffeeId ->
+                navigateToDetail(coffeeId)
+            },
+            onSwipeToRefresh = {
+                viewModel.emitAction(RefreshCoffeesAction(it))
+            },
+            state = state
+        )
+
         TopAppBar(
             title = {
                 Text(
@@ -52,31 +64,14 @@ fun CoffeeOptionsScreen(
         )
 
         if (state.isLoading) {
-            LoadingScreen()
-        } else {
-            CoffeeOptionsList(
-                modifier = Modifier.padding(top = 28.dp),
-                coffees = state.coffees,
-                onCoffeeClick = { coffeeId ->
-                    navigateToDetail(coffeeId)
-                },
-                onSwipeToRefresh = {
-                    viewModel.emitAction(RefreshCoffeesAction)
-                },
-                state = state
+            CircularProgressIndicator(
+                Modifier
+                    .size(48.dp)
+                    .align(Alignment.Center),
+                color = MaterialTheme.colors.onBackground
             )
         }
-
-        TopAppBar(
-            title = {
-                Text(
-                    stringResource(R.string.coffee_options_title),
-                    style = MaterialTheme.typography.h3
-                )
-            }
-        )
     }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -85,14 +80,14 @@ fun CoffeeOptionsList(
     modifier: Modifier = Modifier,
     coffees: List<Coffee>,
     onCoffeeClick: (Int) -> Unit,
-    onSwipeToRefresh: () -> Unit,
+    onSwipeToRefresh: (CoroutineScope) -> Unit,
     state: CoffeeOptionsState
 ) {
     val refreshScope = rememberCoroutineScope()
-    val refreshing = state.isLoading
+    val refreshing = state.isRefreshing
 
     fun refresh() = refreshScope.launch {
-        onSwipeToRefresh()
+        onSwipeToRefresh(this)
     }
 
     val prState = rememberPullRefreshState(refreshing, ::refresh)
@@ -103,7 +98,10 @@ fun CoffeeOptionsList(
                 CoffeeListItem(onClick = { onCoffeeClick(coffee.id) }, coffee = coffee)
             }
         }
-        PullRefreshIndicator(refreshing, prState, Modifier.align(Alignment.TopCenter))
+        PullRefreshIndicator(refreshing, prState,
+            Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 24.dp))
     }
 }
 
@@ -123,6 +121,7 @@ fun CoffeeListItem(modifier: Modifier = Modifier, coffee: Coffee, onClick: () ->
             )
             if (coffee.liked) {
                 Icon(
+                    modifier = Modifier.padding(8.dp),
                     imageVector = Icons.Filled.Favorite,
                     contentDescription = null,
                     tint = Color.Red

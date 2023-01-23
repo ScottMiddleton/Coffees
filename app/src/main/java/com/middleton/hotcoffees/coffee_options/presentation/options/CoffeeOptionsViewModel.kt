@@ -1,5 +1,6 @@
 package com.middleton.hotcoffees.coffee_options.presentation.options
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.middleton.hotcoffees.R
@@ -8,11 +9,11 @@ import com.middleton.hotcoffees.coffee_options.domain.usecases.GetCoffeesUseCase
 import com.middleton.hotcoffees.coffee_options.domain.usecases.UpdateCoffeesUseCase
 import com.middleton.hotcoffees.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,10 +31,12 @@ class CoffeeOptionsViewModel @Inject constructor(
     private val _uiEvent = Channel<CoffeeOptionsSnackBarEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    private var updateCoffeesJob: Job? = null
+
     init {
         viewModelScope.launch {
             getCoffeesUseCase.invoke().collect {
-                _state.value = CoffeeOptionsState(coffees = it, isLoading = false)
+                _state.value = _state.value.copy(coffees = it)
             }
         }
 
@@ -47,29 +50,31 @@ class CoffeeOptionsViewModel @Inject constructor(
     }
 
     private fun updateCoffees() {
-        _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch {
-            updateCoffeesUseCase.invoke().onFailure {
-                if (state.value.coffees.isEmpty()) {
-                    _uiEvent.send(CoffeeOptionsSnackBarEvent(UiText.StringResource(R.string.generic_error_loading)))
-                    _state.value = _state.value.copy(isLoading = false)
-                }
-            }.onSuccess {
-                _state.value = _state.value.copy(isLoading = false)
+            if (updateCoffeesJob?.isActive == false || updateCoffeesJob == null) {
+                updateCoffeesJob = updateCoffeesUseCase.invoke().onEach {
+                    it.onFailure {
+                        _uiEvent.send(CoffeeOptionsSnackBarEvent(UiText.StringResource(R.string.generic_error_loading)))
+                    }
+                    _state.value = _state.value.copy(isLoading = false, isRefreshing = false)
+                }.launchIn(viewModelScope)
             }
-
         }
     }
 
     fun emitAction(action: RefreshCoffeesAction) {
-        viewModelScope.launch {
+        action.scope.launch {
+            _state.value = _state.value.copy(isRefreshing = true)
             uiActions.emit(action)
         }
     }
 }
 
 data class CoffeeOptionsState(
-    val coffees: List<Coffee> = emptyList(), val isLoading: Boolean = true
+    val coffees: List<Coffee> = emptyList(),
+    val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false
 )
-object RefreshCoffeesAction
+
+data class RefreshCoffeesAction(val scope: CoroutineScope)
 data class CoffeeOptionsSnackBarEvent(val message: UiText)
