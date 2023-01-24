@@ -8,10 +8,10 @@ The app allows users to view a list of coffees, even when there is no network co
 
 Users can also drill down to see the details of a specific coffee, including the image, description, and ingredients. From the toolbar, users can also "like" a coffee, which will order it at the top of the list.
 
-Additionally, users can create a review for a coffee, which includes their name, a multi-line review description, a rating (selected from a list of 10 options), and the ability to submit the review through an API endpoint. However, it's important to note that this API endpoint is not supported and will fail, and the app handles the error accordi
+Additionally, users can create a review for a coffee, which includes their name, a multi-line review description, a rating (selected from a list of 10 options), and the ability to submit the review through an API endpoint. However, it's important to note that this API endpoint is not supported and will fail, and the app handles the error accordingly
 
 ## Implementation
-The application follows an MVVM architecture pattern and uses Hilt for dependency injection. Navigation and layouts are handled with Jetpack Compose, which is a modern toolkit for building beautiful and performant Android apps.
+The application follows an MVVM architecture pattern and uses Hilt for dependency injection. Navigation and layouts are handled with Jetpack Compose.
 
 A Room database is set up for local storage of coffee data and Coffee User Interaction data, which is used to store the liked status and review of a coffee. The Room database is used to provide a local cache of the coffee data, which is fetched from a third-party API using Retrofit.
 
@@ -19,7 +19,7 @@ With the Room database as the single source of truth, Flows are used where appro
 
 ViewModels hold the state of the data and handle the logic of the user interface, while the view is responsible for displaying the data and handling user interactions. Communication between the view and the ViewModels is done through events and actions. The ViewModels also have the ability to emit events that the view can listen for and respond to, allowing for a decoupled relationship between the two. This approach allows for a clear separation of concerns, making the code more maintainable and easier to test. Additionally, this approach works well when using Hilt dependency injection as it allows the dependencies to be injected in the ViewModels. This way, the view is not responsible for managing the dependencies, which makes the code more modular and easier to test, as the view and ViewModel can be tested separately.
 
-Please note that, in the interest of completing the test within a reasonable timeframe, I did not include a review field to accept date input. However, hopefully this is the only requirement that was not met.
+Please note that, in the interest of completing the test within a reasonable timeframe, I did not include a review field to accept date input. However, I believe this is the only requirement that was not met.
 
 ## Testing
 I provided an example of testing approaches, rather than comprehensive coverage of the enitire app. Specifically, coverage for the Repository, UseCase and ViewModel layers of the Coffee Options feature. 
