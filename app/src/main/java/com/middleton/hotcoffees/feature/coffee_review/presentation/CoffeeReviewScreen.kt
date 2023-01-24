@@ -3,7 +3,9 @@
 package com.middleton.hotcoffees.feature.coffee_review.presentation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -75,8 +77,13 @@ fun CoffeeReviewScreen(
                     }
                 })
 
-            Column(modifier = Modifier.padding(spacing.spaceMedium)) {
+            val scrollState = rememberScrollState()
 
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(spacing.spaceMedium)
+            ) {
                 OutlinedTextField(
                     value = state.review.name ?: "",
                     onValueChange = { viewModel.emitAction(CoffeeReviewAction.OnNameUpdated(it)) },

@@ -2,6 +2,8 @@ package com.middleton.hotcoffees.feature.coffee_options.presentation.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -33,14 +35,12 @@ fun CoffeeDetailsScreen(
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
-    Box {
-        state.coffee?.let { coffee ->
-            CoffeeDetailsContent(coffee, onLikeCheckedChange = {
-                viewModel.emitAction(
-                    CoffeeDetailsAction.OnLikedChanged(it)
-                )
-            }, onNavigateUp = onNavigateUp, onReviewClicked = { onReviewClicked(coffee.id) })
-        }
+    state.coffee?.let { coffee ->
+        CoffeeDetailsContent(coffee, onLikeCheckedChange = {
+            viewModel.emitAction(
+                CoffeeDetailsAction.OnLikedChanged(it)
+            )
+        }, onNavigateUp = onNavigateUp, onReviewClicked = { onReviewClicked(coffee.id) })
     }
 }
 
@@ -54,75 +54,83 @@ fun CoffeeDetailsContent(
     val spacing = LocalSpacing.current
     var isLoading by remember { mutableStateOf(true) }
 
-    Column {
-        Box(modifier = Modifier.heightIn(max = 400.dp)) {
-            val placeholder = painterResource(R.drawable.placeholder)
-            AsyncImage(
-                modifier = Modifier.fillMaxWidth(),
-                model = coffee.imageUrl,
-                contentDescription = null,
-                onSuccess = {
-                    isLoading = false
-                },
-                onError = {
-                    isLoading = false
-                },
-                error = placeholder,
-                contentScale = Crop
-            )
+    val scrollState = rememberScrollState()
 
-            CoffeeTopAppBar(
-                title = coffee.title,
-                liked = coffee.liked,
-                onNavigateUp = onNavigateUp,
-                onLikeCheckedChange = {liked -> onLikeCheckedChange(liked)}
-            )
-
-            if (isLoading) {
-                CircularProgressIndicator(
-                    Modifier
-                        .size(48.dp)
-                        .align(Alignment.Center),
-                    color = Color.Black
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(spacing.spaceSmall))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(spacing.spaceMedium)
-        ) {
-            Text(text = coffee.description, style = MaterialTheme.typography.body1)
-
-            Spacer(modifier = Modifier.height(spacing.spaceMedium))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    modifier = Modifier.padding(end = spacing.spaceExtraSmall),
-                    text = stringResource(R.string.ingredients),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold
-
+    Box(
+        modifier = Modifier
+            .verticalScroll(state = scrollState)
+    ) {
+        Column {
+            Box(modifier = Modifier.heightIn(max = 400.dp)) {
+                val placeholder = painterResource(R.drawable.placeholder)
+                AsyncImage(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = coffee.imageUrl,
+                    contentDescription = null,
+                    onSuccess = {
+                        isLoading = false
+                    },
+                    onError = {
+                        isLoading = false
+                    },
+                    error = placeholder,
+                    contentScale = Crop
                 )
 
-                Text(
-                    text = coffee.ingredients.joinToString(),
-                    style = MaterialTheme.typography.body1
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        Modifier
+                            .size(48.dp)
+                            .align(Alignment.Center),
+                        color = Color.Black
+                    )
+                }
             }
 
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
 
-            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(spacing.spaceMedium)
+            ) {
+                Text(text = coffee.description, style = MaterialTheme.typography.body1)
 
-            WriteReviewButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = onReviewClicked
-            )
+                Spacer(modifier = Modifier.height(spacing.spaceMedium))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        modifier = Modifier.padding(end = spacing.spaceExtraSmall),
+                        text = stringResource(R.string.ingredients),
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold
+
+                    )
+
+                    Text(
+                        text = coffee.ingredients.joinToString(),
+                        style = MaterialTheme.typography.body1
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.height(spacing.spaceMedium))
+
+                WriteReviewButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    onClick = onReviewClicked
+                )
+            }
         }
     }
+
+    CoffeeTopAppBar(
+        title = coffee.title,
+        liked = coffee.liked,
+        onNavigateUp = onNavigateUp,
+        onLikeCheckedChange = { liked -> onLikeCheckedChange(liked) }
+    )
+
 }
 
 @Composable

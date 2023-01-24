@@ -38,6 +38,17 @@ object AppModule {
             .client(client)
             .build().create()
     }
+
+    @Provides
+    @Singleton
+    fun provideReviewApi(client: OkHttpClient): ReviewApi {
+        return Retrofit.Builder()
+            .baseUrl(ReviewApi.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(client)
+            .build().create()
+    }
+
     @Provides
     @Singleton
     fun provideCoffeeDatabase(app: Application): CoffeeDatabase {
@@ -55,16 +66,6 @@ object AppModule {
             api = api,
             dao = db.coffeeDao()
         )
-    }
-
-    @Provides
-    @Singleton
-    fun provideReviewApi(client: OkHttpClient): ReviewApi {
-        return Retrofit.Builder()
-            .baseUrl(ReviewApi.BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(client)
-            .build().create()
     }
 
     @Provides
