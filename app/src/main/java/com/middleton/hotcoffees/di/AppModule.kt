@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.room.Room
 import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDatabase
 import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
-import com.middleton.hotcoffees.coffee_options.data.repository.CoffeeRepositoryImpl
-import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
+import com.middleton.hotcoffees.coffee_options.data.repository.CoffeeOptionsOptionsRepositoryImpl
+import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeOptionsRepository
 import com.middleton.hotcoffees.coffee_review.data.remote.ReviewApi
 import com.middleton.hotcoffees.coffee_review.data.repository.CoffeeReviewRepositoryImpl
 import com.middleton.hotcoffees.coffee_review.domain.repository.CoffeeReviewRepository
@@ -50,8 +50,8 @@ object AppModule {
     fun provideCoffeeRepository(
         api: CoffeeApi,
         db: CoffeeDatabase
-    ): CoffeeRepository {
-        return CoffeeRepositoryImpl(
+    ): CoffeeOptionsRepository {
+        return CoffeeOptionsOptionsRepositoryImpl(
             api = api,
             dao = db.coffeeDao()
         )

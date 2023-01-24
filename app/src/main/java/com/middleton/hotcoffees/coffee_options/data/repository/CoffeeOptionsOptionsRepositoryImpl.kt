@@ -6,16 +6,16 @@ import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffee
 import com.middleton.hotcoffees.coffee_options.domain.mappers.toCoffeeEntity
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
-import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeRepository
+import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeOptionsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class CoffeeRepositoryImpl @Inject constructor(
+class CoffeeOptionsOptionsRepositoryImpl @Inject constructor(
     private val api: CoffeeApi,
     private val dao: CoffeeDao
-) : CoffeeRepository {
+) : CoffeeOptionsRepository {
     override suspend fun getCoffees(): Flow<List<Coffee>> {
         return dao.getAllCoffees().map { entityList -> entityList.map { it.toCoffee() } }
     }

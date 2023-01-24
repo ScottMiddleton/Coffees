@@ -22,7 +22,6 @@ fun CoffeeAndUserInteraction.toCoffee() : Coffee {
         description = this.coffee.description,
         ingredients = this.coffee.ingredients,
         imageUrl = this.coffee.imageUrl,
-        liked = this.userInteraction?.isLiked ?: false,
-        review = this.userInteraction?.review
+        liked = this.userInteraction?.isLiked ?: false
     )
 }

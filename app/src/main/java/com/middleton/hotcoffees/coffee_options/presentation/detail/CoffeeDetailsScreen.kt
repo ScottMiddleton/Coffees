@@ -6,9 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,13 +34,6 @@ fun CoffeeDetailsScreen(
     val state = viewModel.state.collectAsStateWithLifecycle().value
 
     Box {
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                Modifier.size(48.dp).align(Alignment.Center),
-                color = Color.Black
-            )
-        }
-
         state.coffee?.let { coffee ->
             CoffeeDetailsContent(coffee, onLikeCheckedChange = {
                 viewModel.emitAction(
@@ -61,6 +52,7 @@ fun CoffeeDetailsContent(
     onReviewClicked: () -> Unit
 ) {
     val spacing = LocalSpacing.current
+    var isLoading by remember { mutableStateOf(true) }
 
     Column {
         Box(modifier = Modifier.heightIn(max = 400.dp)) {
@@ -69,7 +61,12 @@ fun CoffeeDetailsContent(
                 modifier = Modifier.fillMaxWidth(),
                 model = coffee.imageUrl,
                 contentDescription = null,
-                placeholder = placeholder,
+                onSuccess = {
+                    isLoading = false
+                },
+                onError = {
+                    isLoading = false
+                },
                 error = placeholder,
                 contentScale = Crop
             )
@@ -80,6 +77,15 @@ fun CoffeeDetailsContent(
                 onNavigateUp = onNavigateUp,
                 onLikeCheckedChange = onLikeCheckedChange
             )
+
+            if (isLoading) {
+                CircularProgressIndicator(
+                    Modifier
+                        .size(48.dp)
+                        .align(Alignment.Center),
+                    color = Color.Black
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(spacing.spaceSmall))

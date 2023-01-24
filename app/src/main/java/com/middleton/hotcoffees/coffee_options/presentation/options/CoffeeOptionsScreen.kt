@@ -49,7 +49,7 @@ fun CoffeeOptionsScreen(
                 navigateToDetail(coffeeId)
             },
             onSwipeToRefresh = {
-                viewModel.emitAction(RefreshCoffeesAction(it))
+                viewModel.refreshAction()
             },
             state = state
         )

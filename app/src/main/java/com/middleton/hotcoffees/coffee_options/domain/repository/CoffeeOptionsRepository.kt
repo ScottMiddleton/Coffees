@@ -3,7 +3,7 @@ package com.middleton.hotcoffees.coffee_options.domain.repository
 import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
 import kotlinx.coroutines.flow.Flow
 
-interface CoffeeRepository {
+interface CoffeeOptionsRepository {
     suspend fun getCoffees(): Flow<List<Coffee>>
 
     suspend fun updateCoffees(): Flow<Result<Unit>>

@@ -36,11 +36,9 @@ class CoffeeDetailsViewModel @Inject constructor(
             }
         }
 
-
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = state.value.copy(
-                coffee = getCoffeeByIdUseCase.invoke(coffeeId),
-                isLoading = false
+                coffee = getCoffeeByIdUseCase.invoke(coffeeId)
             )
         }
     }
@@ -66,7 +64,7 @@ class CoffeeDetailsViewModel @Inject constructor(
 }
 
 
-data class CoffeeDetailsState(val coffee: Coffee? = null, val isLoading: Boolean = true)
+data class CoffeeDetailsState(val coffee: Coffee? = null)
 sealed class CoffeeDetailsAction {
     data class OnLikedChanged(val isLiked: Boolean) : CoffeeDetailsAction()
     data class OnReviewClicked(val isLiked: Boolean) : CoffeeDetailsAction()

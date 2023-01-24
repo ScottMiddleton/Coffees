@@ -23,8 +23,7 @@ data class CoffeeEntity(
 )
 data class CoffeeUserInteraction(
     @PrimaryKey val coffeeId: Int,
-    val isLiked: Boolean = false,
-    val review: String? = null
+    val isLiked: Boolean = false
 )
 
 data class CoffeeAndUserInteraction(
