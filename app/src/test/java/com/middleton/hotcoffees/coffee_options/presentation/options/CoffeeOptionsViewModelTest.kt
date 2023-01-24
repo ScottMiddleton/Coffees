@@ -2,9 +2,11 @@ package com.middleton.hotcoffees.coffee_options.presentation.options
 
 import app.cash.turbine.test
 import com.middleton.hotcoffees.R
-import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
-import com.middleton.hotcoffees.coffee_options.domain.usecases.GetCoffeesSortedUseCase
-import com.middleton.hotcoffees.coffee_options.domain.usecases.UpdateCoffeesUseCase
+import com.middleton.hotcoffees.feature.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.feature.coffee_options.domain.usecases.GetCoffeesSortedUseCase
+import com.middleton.hotcoffees.feature.coffee_options.domain.usecases.UpdateCoffeesUseCase
+import com.middleton.hotcoffees.feature.coffee_options.presentation.options.CoffeeOptionsSnackBarEvent
+import com.middleton.hotcoffees.feature.coffee_options.presentation.options.CoffeeOptionsViewModel
 import com.middleton.hotcoffees.util.UiText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

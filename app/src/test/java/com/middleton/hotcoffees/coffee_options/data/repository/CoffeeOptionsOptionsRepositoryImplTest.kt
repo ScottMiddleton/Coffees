@@ -3,12 +3,13 @@
 package com.middleton.hotcoffees.coffee_options.data.repository
 
 import app.cash.turbine.test
-import com.middleton.hotcoffees.coffee_options.data.local.CoffeeAndUserInteraction
-import com.middleton.hotcoffees.coffee_options.data.local.CoffeeDao
-import com.middleton.hotcoffees.coffee_options.data.local.CoffeeEntity
-import com.middleton.hotcoffees.coffee_options.data.remote.CoffeeApi
+import com.middleton.hotcoffees.feature.coffee_options.data.local.CoffeeAndUserInteraction
+import com.middleton.hotcoffees.feature.coffee_options.data.local.CoffeeDao
+import com.middleton.hotcoffees.feature.coffee_options.data.local.CoffeeEntity
+import com.middleton.hotcoffees.feature.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.data.remote.validCoffeeResponse
-import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.feature.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.feature.coffee_options.data.repository.CoffeeOptionsOptionsRepositoryImpl
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

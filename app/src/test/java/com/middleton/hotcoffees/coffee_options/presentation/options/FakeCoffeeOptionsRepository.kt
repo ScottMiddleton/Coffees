@@ -1,7 +1,7 @@
 package com.middleton.hotcoffees.coffee_options.presentation.options
 
-import com.middleton.hotcoffees.coffee_options.domain.model.Coffee
-import com.middleton.hotcoffees.coffee_options.domain.repository.CoffeeOptionsRepository
+import com.middleton.hotcoffees.feature.coffee_options.domain.model.Coffee
+import com.middleton.hotcoffees.feature.coffee_options.domain.repository.CoffeeOptionsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow

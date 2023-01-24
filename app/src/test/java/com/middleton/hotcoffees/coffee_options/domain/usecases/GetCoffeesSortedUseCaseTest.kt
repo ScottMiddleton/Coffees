@@ -4,6 +4,7 @@ package com.middleton.hotcoffees.coffee_options.domain.usecases
 
 import app.cash.turbine.test
 import com.middleton.hotcoffees.coffee_options.presentation.options.FakeCoffeeOptionsRepository
+import com.middleton.hotcoffees.feature.coffee_options.domain.usecases.GetCoffeesSortedUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
