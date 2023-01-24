@@ -75,7 +75,7 @@ fun CoffeeDetailsContent(
                 title = coffee.title,
                 liked = coffee.liked,
                 onNavigateUp = onNavigateUp,
-                onLikeCheckedChange = onLikeCheckedChange
+                onLikeCheckedChange = {liked -> onLikeCheckedChange(liked)}
             )
 
             if (isLoading) {
@@ -152,7 +152,9 @@ private fun CoffeeTopAppBar(
                 .weight(1f)
                 .padding(start = 8.dp)
         )
-        LikeToggleButton(liked = liked, onLikeCheckedChange = onLikeCheckedChange)
+        LikeToggleButton(liked = liked, onLikeCheckedChange = { liked ->
+            onLikeCheckedChange(liked)
+        })
     }
 }
 
@@ -162,19 +164,17 @@ fun LikeToggleButton(
     liked: Boolean,
     onLikeCheckedChange: (Boolean) -> Unit
 ) {
-    val isLiked = remember { mutableStateOf(liked) }
     IconToggleButton(
         modifier = modifier,
         onCheckedChange = { checked ->
-            isLiked.value = checked
             onLikeCheckedChange(checked)
         },
-        checked = isLiked.value
+        checked = liked
     ) {
         Icon(
             imageVector = Icons.Filled.Favorite,
             contentDescription = null,
-            tint = if (isLiked.value) Color.Red else Color.White
+            tint = if (liked) Color.Red else Color.White
         )
     }
 }

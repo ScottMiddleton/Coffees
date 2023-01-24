@@ -54,6 +54,10 @@ class CoffeeDetailsViewModel @Inject constructor(
             is CoffeeDetailsAction.OnLikedChanged -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     updateCoffeeLikedStatusUseCase.invoke(coffeeId, action.isLiked)
+
+                    _state.value = state.value.copy(
+                        coffee = getCoffeeByIdUseCase.invoke(coffeeId)
+                    )
                 }
             }
             is CoffeeDetailsAction.OnReviewClicked -> {
