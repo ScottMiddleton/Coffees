@@ -90,7 +90,7 @@ fun CoffeeReviewScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceExtraSmall))
+                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceSmall))
 
                 OutlinedTextField(
                     value = state.review.body ?: "",
@@ -101,7 +101,7 @@ fun CoffeeReviewScreen(
                         .height(200.dp)
                 )
 
-                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceExtraSmall))
+                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceSmall))
 
                 RatingDropdown(
                     suggestions = state.ratingSuggestions,
@@ -110,7 +110,7 @@ fun CoffeeReviewScreen(
                         viewModel.emitAction(CoffeeReviewAction.OnRatingUpdated(rating))
                     })
 
-                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceMedium))
+                Spacer(modifier = Modifier.height(LocalSpacing.current.spaceLarge))
 
                 Button(
                     onClick = {
@@ -123,7 +123,7 @@ fun CoffeeReviewScreen(
                         .align(Alignment.CenterHorizontally),
                     enabled = state.isValidReview
                 ) {
-                    Text(stringResource(R.string.submit_reveiw))
+                    Text(stringResource(R.string.submit_review))
                 }
             }
         }
@@ -146,7 +146,6 @@ private fun RatingDropdown(
         }
     ) {
         OutlinedTextField(
-            modifier = modifier.fillMaxWidth(),
             value = currentSelection ?: "",
             onValueChange = {},
             label = { Text(text = stringResource(R.string.rating)) },
@@ -159,6 +158,7 @@ private fun RatingDropdown(
         )
 
         ExposedDropdownMenu(
+            modifier = modifier.exposedDropdownSize(),
             expanded = expanded,
             onDismissRequest = {
                 expanded = false

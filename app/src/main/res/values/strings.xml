@@ -6,6 +6,6 @@
     <string name="generic_error_review">An error occurred. Please check you internet connection and resubmit.</string>
     <string name="coffee_options_title">Coffee options</string>
     <string name="write_review">Write Review</string>
-    <string name="submit_reveiw">Submit Review</string>
+    <string name="submit_review">Submit Review</string>
     <string name="rating">Rating</string>
 </resources>

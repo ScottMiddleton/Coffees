@@ -1,6 +1,6 @@
 package com.middleton.hotcoffees
 
-import HotCoffeesTheme
+import com.middleton.hotcoffees.ui.theme.HotCoffeesTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
