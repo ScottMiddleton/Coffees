@@ -60,9 +60,6 @@ class CoffeeDetailsViewModel @Inject constructor(
                     )
                 }
             }
-            is CoffeeDetailsAction.OnReviewClicked -> {
-
-            }
         }
     }
 }
@@ -70,5 +67,4 @@ class CoffeeDetailsViewModel @Inject constructor(
 data class CoffeeDetailsState(val coffee: Coffee? = null)
 sealed class CoffeeDetailsAction {
     data class OnLikedChanged(val isLiked: Boolean) : CoffeeDetailsAction()
-    data class OnReviewClicked(val isLiked: Boolean) : CoffeeDetailsAction()
 }
