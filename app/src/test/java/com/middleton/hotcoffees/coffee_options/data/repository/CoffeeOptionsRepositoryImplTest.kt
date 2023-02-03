@@ -9,7 +9,7 @@ import com.middleton.hotcoffees.feature.coffee_options.data.local.CoffeeEntity
 import com.middleton.hotcoffees.feature.coffee_options.data.remote.CoffeeApi
 import com.middleton.hotcoffees.coffee_options.data.remote.validCoffeeResponse
 import com.middleton.hotcoffees.feature.coffee_options.domain.model.Coffee
-import com.middleton.hotcoffees.feature.coffee_options.data.repository.CoffeeOptionsOptionsRepositoryImpl
+import com.middleton.hotcoffees.feature.coffee_options.data.repository.CoffeeOptionsRepositoryImpl
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,8 +28,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
-class CoffeeOptionsOptionsRepositoryImplTest {
-    private lateinit var repository: CoffeeOptionsOptionsRepositoryImpl
+class CoffeeOptionsRepositoryImplTest {
+    private lateinit var repository: CoffeeOptionsRepositoryImpl
     private lateinit var mockWebServer: MockWebServer
     private lateinit var okHttpClient: OkHttpClient
     private lateinit var api: CoffeeApi
@@ -50,7 +50,7 @@ class CoffeeOptionsOptionsRepositoryImplTest {
             .baseUrl(mockWebServer.url("/"))
             .build()
             .create(CoffeeApi::class.java)
-        repository = CoffeeOptionsOptionsRepositoryImpl(
+        repository = CoffeeOptionsRepositoryImpl(
             dao = dao,
             api = api
         )

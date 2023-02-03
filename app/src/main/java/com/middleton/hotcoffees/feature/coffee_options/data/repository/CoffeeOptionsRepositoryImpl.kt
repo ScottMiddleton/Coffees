@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class CoffeeOptionsOptionsRepositoryImpl @Inject constructor(
+class CoffeeOptionsRepositoryImpl @Inject constructor(
     private val api: CoffeeApi,
     private val dao: CoffeeDao
 ) : CoffeeOptionsRepository {
